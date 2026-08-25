@@ -31,6 +31,9 @@ const userSchema=mongoose.Schema({
     },
     coverImage:{
         type:String,
+    },
+    refrehToken:{
+        type:String
     }
 },{timestamps:true})
 
