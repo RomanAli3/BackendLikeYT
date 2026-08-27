@@ -64,7 +64,7 @@ const coverImage = coverImageLocalPath
         password,
         fullName,
         profilePicture:profilePic.url,
-        coverImage:coverImage.url||""
+        coverImage:coverImage?.url||""
     })
 
     const createdUser=await User.findById(user._id).select("-password -refreshToken")
@@ -125,7 +125,21 @@ const loginUser=AsyncHandler(async(req,res)=>{
 })
 
 const logoutUser=AsyncHandler(async(req,res)=>{
-    
+
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $unset:{refreshToken:1}
+        },
+        {
+            new:true
+        }
+    )
+
+    return res.status(200)
+    .clearCookie("accessToekn",options)
+    .clearCookie("refreshToken",options)
+    .json(new ApiResponse(200,{},"user logout successfully"))
 })
 
 
@@ -134,4 +148,6 @@ const logoutUser=AsyncHandler(async(req,res)=>{
 
 
 
-export {userRegisteration,loginUser}
+
+
+export {userRegisteration,loginUser,logoutUser}

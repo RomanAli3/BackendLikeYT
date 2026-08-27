@@ -8,5 +8,6 @@ dotenv.config({
 app.use(express.json())
 app.use(cookieParser())
 
-
+import userRouter from './routes/user.routes.js'
+app.use("/user",userRouter)
 export {app} 
