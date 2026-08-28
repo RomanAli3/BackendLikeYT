@@ -135,7 +135,6 @@ const logoutUser=AsyncHandler(async(req,res)=>{
             new:true
         }
     )
-
     return res.status(200)
     .clearCookie("accessToekn",options)
     .clearCookie("refreshToken",options)
@@ -145,9 +144,119 @@ const logoutUser=AsyncHandler(async(req,res)=>{
 
 
 
+const getCurrentUser=AsyncHandler(async(req,res)=>{
+    const user =req.user
+    if(!user){
+        throw new ApiError("User not loged in")
+    }
+
+    return res.status(200)
+    .json(new ApiResponse(200,user,"User fetched sucsessfuly fetched"))
+
+})
+
+const changeProfilePicture=AsyncHandler(async(req,res)=>{
+    const profilePictureLocalPath=req.files?.profilePicture?.[0].path
+    if(!profilePictureLocalPath){
+        throw new ApiError(400,"Please select profile picture")
+    }
+
+    const profilePicture=await UploadOnCloudinary(profilePictureLocalPath)
+
+    const user = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            profilePicture:profilePicture.url
+        },
+        {
+            new:true
+        }
+    )
+
+    return res.status(200)
+    .json(new ApiResponse(200,user,"User profile picture updated"))
+
+})
+
+const changeCoverImage=AsyncHandler(async(req,res)=>{
+    const coverImageLocalPath=req.files?.coverImage?.[0].path
+    if(!coverImageLocalPath){
+        throw new ApiError(400,"Please select cover image ")
+    }
+
+    const coverImage=await UploadOnCloudinary(coverImageLocalPath)
+
+    const user = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            coverImage:coverImage.url
+        },
+        {
+            new:true
+        }
+    )
+
+    return res.status(200)
+    .json(new ApiResponse(200,user,"User profile picture updated"))
+
+})
+
+const changeUserPassword=AsyncHandler(async(req,res)=>{
+    const {oldPassword,newPassword}=req.body
+    if(!oldPassword.trim()||!newPassword.trim()){
+        throw new ApiError(400,"Enter old and new password" )
+    }
+
+    const user = await User.findById(req.user._id)
+    const checkPassword = await user.isPasswordCorrect(oldPassword)
+
+    if(!checkPassword){
+        throw new ApiError(400,"Invalid password !")
+    }
+
+    const updatedUser=await User.findByIdAndUpdate(
+        req.user._id,
+    {
+        password:newPassword
+    },
+    {
+        new:true
+    }
+    )
+
+    return res.status(200)
+    .json(new ApiResponse(200,updatedUser,"Password change successfully"))
 
 
+})
 
 
+const changeFullName=AsyncHandler(async(req,res)=>{
+    const {fullName} = req.body
+    if(!fullName){
+        throw new ApiError(400,"Name is required")
+    }
+    const user=await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            fullName:fullName
+        },
+        {
+            new:true
+        }
+    ).select("-password -refreshToken")
 
-export {userRegisteration,loginUser,logoutUser}
+    return res.status(200)
+    .json(new ApiResponse(200,user,"fullName changed successfully"))
+})
+
+export {
+    userRegisteration,
+    loginUser,
+    logoutUser,
+    getCurrentUser,
+    changeProfilePicture,
+    changeCoverImage,
+    changeUserPassword,
+    changeFullName
+}
