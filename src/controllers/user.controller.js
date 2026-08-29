@@ -3,6 +3,7 @@ import { UploadOnCloudinary } from '../utils/cloudnairy.js'
 import { ApiError } from '../utils/apiErrorHandling.js'
 import { ApiResponse } from '../utils/apiResponse.js'
 import { AsyncHandler } from '../utils/asyncHandler.js'
+import nodemailer from "nodemailer"
 
 const options={
       httpOnly:true,
@@ -24,6 +25,24 @@ const genrateAccessAndRefreshToken=async (userId)=>{
     }
 }
 
+
+// Create a transporter using SMTP
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+async function sendemail(to, sub, msg) {
+    await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: to,
+        subject: sub,
+        html: msg
+    });
+}
 
 const userRegisteration=AsyncHandler(async(req,res)=>{
     const {userName,email,password,fullName}=req.body
@@ -55,7 +74,7 @@ const coverImage = coverImageLocalPath
     : null
 
     if(!profilePic){
-        throw new ApiError(400,"Error while uploading images")
+        throw new ApiError(400,"Error while uploading images please change time setting")
     }
 
     const user=await User.create({
@@ -74,6 +93,21 @@ const coverImage = coverImageLocalPath
 
     }
 
+   await sendemail(
+    email,
+    "Welcome to VideoHub — Your Account Has Been Created! 🎉",
+    `
+        <h2>Welcome to VideoHub, ${userName}! 🎉</h2>
+
+        <p>Your account has been successfully created.</p>
+
+        <p>You can now explore VideoHub and enjoy everything our platform has to offer.</p>
+
+        <p>Thanks for joining us!</p>
+
+        <p>— The VideoHub Team 🚀</p>
+    `
+)
     return res.status(201)
     .json(new ApiResponse(201,createdUser,"User created successfully"))
 })
