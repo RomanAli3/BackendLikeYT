@@ -21,17 +21,15 @@ const videoSchema=mongoose.Schema({
     },
      thumbnailUrl: {
     type: String,
-    required: [true, 'Thumbnail URL is required']
   },
   duration: {
     type: Number, 
-    required: true,
+    default:0,
     min: [0, 'Duration cannot be negative']
   },
   owner:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'User',
-    required:true
+      type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
   }
 },{timestamps:true})
 

@@ -263,8 +263,6 @@ const changeUserPassword=AsyncHandler(async(req,res)=>{
 
 
 })
-
-
 const changeFullName=AsyncHandler(async(req,res)=>{
     const {fullName} = req.body
     if(!fullName){
