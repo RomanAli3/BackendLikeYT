@@ -13,4 +13,8 @@ app.use("/user",userRouter)
 
 import videoRouter from './routes/video.routes.js'
 app.use("/video",videoRouter)
+
+import commentRouter from './routes/comment.routes.js'
+app.use("/comment",commentRouter)
+
 export {app} 

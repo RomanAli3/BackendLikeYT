@@ -57,10 +57,6 @@ if (video.owner.toString() !== req.user._id.toString()) {
     throw new ApiError(400, "Only owner can delete video")
 }
     
- if (video.owner.toString() !== req.user._id.toString()) {
-    throw new ApiError(400,"Only owner can delete video")
-   
-  }
   
    await Video.findByIdAndDelete(id)
 
