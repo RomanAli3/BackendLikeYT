@@ -50,7 +50,14 @@ const deleteComment=AsyncHandler(async(req,res)=>{
     .json(new ApiResponse(200,{},"Comment deleted successfully"))
 })
 
+const getAllComments =AsyncHandler(async(req,res)=>{
+    const allComments =await Comment.find({})
+     
+    return res.status(200)
+    .json(new ApiResponse(200,allComments,"All comments fetched succussfully"))
+})
 export {
     addComment,
-    deleteComment
+    deleteComment,
+    getAllComments
 }

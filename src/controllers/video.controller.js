@@ -62,9 +62,35 @@ if (video.owner.toString() !== req.user._id.toString()) {
 
   return res.status(200)
   .json(new ApiResponse(200,{},"Video deleted successfully"))
-
-
 })
 
+const getAllVideo=AsyncHandler(async(req,res)=>{
+    const videos=await Video.find({})
 
-export {addVideo,deleteVideo}
+    return res.status(200)
+    .json(new ApiResponse(200,videos,"All video fetched successfully"))
+})
+
+const getUserVideo = AsyncHandler(async (req, res) => {
+
+    const userId = req.user._id;
+
+    if (!userId) {
+        throw new ApiError(400, "Please login first");
+    }
+
+    const videos = await Video.find({
+        owner: userId
+    });
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                videos,
+                "User videos fetched successfully"
+            )
+        );
+});
+export {addVideo,deleteVideo,getAllVideo,getUserVideo}

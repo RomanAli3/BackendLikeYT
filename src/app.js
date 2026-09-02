@@ -17,4 +17,6 @@ app.use("/video",videoRouter)
 import commentRouter from './routes/comment.routes.js'
 app.use("/comment",commentRouter)
 
+import likeRouter from './routes/like.routes.js'
+app.use("/like",likeRouter)
 export {app} 

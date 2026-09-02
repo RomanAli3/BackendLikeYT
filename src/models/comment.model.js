@@ -15,7 +15,7 @@ const commentSchema=mongoose.Schema({
         ref:"Video"
 
     }
-})
+},{timestamps:true})
 
 
 export const Comment = mongoose.model("Comment",commentSchema)
