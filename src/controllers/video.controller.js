@@ -93,4 +93,41 @@ const getUserVideo = AsyncHandler(async (req, res) => {
             )
         );
 });
-export {addVideo,deleteVideo,getAllVideo,getUserVideo}
+
+
+const getSingleVideo=AsyncHandler(async(req,res)=>{
+    const {videoId}=req.params
+    if(!videoId.trim()){
+        throw new ApiError(400,"Video i'd missing")
+    }
+
+    const video=await Video.findById(videoId)
+
+    if(!video){
+        throw new ApiError(400,"Video not found")
+    }
+
+    return res.status(200)
+    .json(new ApiResponse(200,video,"Video fetched successfully"))
+})
+
+const viewAddInVideo=AsyncHandler(async(req,res)=>{
+    const {videoId} = req.params
+    if(!videoId){
+        throw new ApiError(400,"Video Id Missing")
+    }
+
+    const video =await Video.findByIdAndUpdate(
+        videoId,
+        { $inc: { views: 1 } },
+        {new:true}
+        
+    )
+    if(!video){
+        throw new ApiError(400,"Video not found")
+    }
+
+    return res.status(200)
+    .json(new ApiResponse(200,video,"Video added successfully"))
+})
+export {addVideo,deleteVideo,getAllVideo,getUserVideo,getSingleVideo,viewAddInVideo}
