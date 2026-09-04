@@ -130,4 +130,39 @@ const viewAddInVideo=AsyncHandler(async(req,res)=>{
     return res.status(200)
     .json(new ApiResponse(200,video,"Video added successfully"))
 })
-export {addVideo,deleteVideo,getAllVideo,getUserVideo,getSingleVideo,viewAddInVideo}
+
+const updateVideo=AsyncHandler(async(req,res)=>{
+    const {videoId} = req.params
+    const {title,description}=req.body
+
+    if(!title?.trim()&&!description?.trim()){
+        throw new ApiError(400,"One field required for change")
+    }
+
+    const videoOwner=await Video.findById(videoId)
+
+    if(!videoOwner){
+        throw new ApiError(400,"video not found")
+    }
+    console.log(videoOwner)
+    console.log(videoOwner.owner)
+
+
+  if (videoOwner.owner.toString() !== req.user._id.toString()) {
+    throw new ApiError(400, "Only owner can update video")
+}
+        const video =await Video.findByIdAndUpdate(
+            videoId,
+            {
+                title,
+                description
+            },
+            {new:true}
+        )
+    
+
+    return res.status(200)
+    .json(new ApiResponse(200,video,"Video updated successfully"))
+
+})
+export {addVideo,deleteVideo,getAllVideo,getUserVideo,getSingleVideo,viewAddInVideo,updateVideo}
