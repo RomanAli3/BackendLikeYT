@@ -20,4 +20,7 @@ app.use("/comment",commentRouter)
 
 import likeRouter from './routes/like.routes.js'
 app.use("/like",likeRouter)
+
+import subscribeRouter from './routes/subscribe.routes.js'
+app.use("/subscribe",subscribeRouter)
 export {app} 

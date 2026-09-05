@@ -5,7 +5,8 @@ import {
      changeProfilePicture,
      changeCoverImage,
      changeUserPassword,
-     changeFullName
+     changeFullName,
+     channelInformation
     
     } from '../controllers/user.controller.js'
 import { upload } from '../middleware/multer.middleware.js'
@@ -42,6 +43,7 @@ router.route("/change-cover-image").patch(verifyJwt,
 router.route("/change-password").patch(verifyJwt,changeUserPassword)
 router.route("/change-full-name").patch(verifyJwt,changeFullName)
 
+router.route('/channel-info/:channelId').get(channelInformation)
 
 
 export default router

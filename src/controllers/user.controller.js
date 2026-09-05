@@ -4,6 +4,9 @@ import { ApiError } from '../utils/apiErrorHandling.js'
 import { ApiResponse } from '../utils/apiResponse.js'
 import { AsyncHandler } from '../utils/asyncHandler.js'
 import nodemailer from "nodemailer"
+import { Subscribe } from '../models/subscribe.model.js'
+import mongoose from 'mongoose'
+import { Video } from '../models/video.model.js'
 
 const options={
       httpOnly:true,
@@ -282,6 +285,42 @@ const changeFullName=AsyncHandler(async(req,res)=>{
     .json(new ApiResponse(200,user,"fullName changed successfully"))
 })
 
+const channelInformation=AsyncHandler(async(req,res)=>{
+    const {channelId}=req.params
+
+    const channel=await User.findById(channelId).select("-password -refreshToken")
+
+    if(!channel){
+        throw new ApiError(400,"channel not found")
+    }
+
+    const channelIdObject=mongoose.Types.ObjectId.createFromHexString(channelId)
+
+    const subscriber =await Subscribe.aggregate([
+        {
+            $match:{channel:channelIdObject}
+        },
+        {
+            $count:"subscriber"
+        }
+    ])
+
+    const videos=await Video.aggregate([
+        {
+            $match:{owner:channelIdObject}
+        },
+
+        {
+        $count:"videos"
+        }
+    ])
+
+    return res.status(200)
+    .json(new ApiResponse(200,{channel,subscriber,videos},"channel information fetched successfully"))
+
+
+
+})
 export {
     userRegisteration,
     loginUser,
@@ -290,5 +329,6 @@ export {
     changeProfilePicture,
     changeCoverImage,
     changeUserPassword,
-    changeFullName
+    changeFullName,
+    channelInformation
 }
