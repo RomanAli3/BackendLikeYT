@@ -56,8 +56,27 @@ const getAllComments =AsyncHandler(async(req,res)=>{
     return res.status(200)
     .json(new ApiResponse(200,allComments,"All comments fetched succussfully"))
 })
+
+const getVideoComments=AsyncHandler(async(req,res)=>{
+    const {videoId}=req.params
+
+    const video =await Video.findById(videoId)
+    if(!video){
+        throw new ApiError(400,"Video not found")
+    }
+
+    const comments=await Comment.find({video:videoId}).populate('user')
+
+    if(!comments){
+        throw new ApiError(400,"Comments not founds")
+    }
+
+    return res.status(200)
+    .json(new ApiResponse(200,comments,"Video comments fetched successfully"))
+})
 export {
     addComment,
     deleteComment,
-    getAllComments
+    getAllComments,
+    getVideoComments
 }
