@@ -3,6 +3,7 @@ import { AsyncHandler } from "../utils/asyncHandler.js"
 import { ApiError } from "../utils/apiErrorHandling.js"
 import { ApiResponse } from "../utils/apiResponse.js"
 import { Video } from "../models/video.model.js"
+import mongoose from 'mongoose'
 const likeVideo = AsyncHandler(async (req, res) => {
 
     const { videoId } = req.params
@@ -43,5 +44,25 @@ const getAllLike=AsyncHandler(async(req,res)=>{
      .json(new ApiResponse(200,allLikes,"all likes fetched successfully"))
 })
 
+const getLikeOnVideo=AsyncHandler(async(req,res)=>{
+    const {videoId}=req.params
 
-export {likeVideo,getAllLike}
+    const video=await Video.findById(videoId)
+
+    if(!video){
+        throw new ApiError(400,"Video not found")
+    }
+    const videoObjectId = mongoose.Types.ObjectId.createFromHexString(videoId);
+
+    const like = await Like.aggregate([
+        { $match: { video: videoObjectId } },
+  { $count: "like" }
+    ])
+
+   
+
+    return res.status(200)
+    .json(new ApiResponse(200,like,"like fetched successfully"))
+})
+
+export {likeVideo,getAllLike,getLikeOnVideo}
