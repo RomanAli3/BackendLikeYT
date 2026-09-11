@@ -21,6 +21,7 @@ const videoSchema=mongoose.Schema({
     },
      thumbnailUrl: {
     type: String,
+    required:[true,"Thambnail required"]
   },
   duration: {
     type: Number, 

@@ -35,7 +35,7 @@ const addVideo =AsyncHandler(async(req,res)=>{
         video:video.url,
         views,
         owner:req.user._id,
-        duration
+        duration:video.duration
 
     })
 
