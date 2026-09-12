@@ -16,6 +16,9 @@ const userSchema=mongoose.Schema({
         lowercase:true,
          match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
+    description:{
+        type:String
+    },
     fullName:{
         type:String,
         required:[true,'fullName is required']

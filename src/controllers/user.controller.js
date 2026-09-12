@@ -48,7 +48,7 @@ async function sendemail(to, sub, msg) {
 }
 
 const userRegisteration=AsyncHandler(async(req,res)=>{
-    const {userName,email,password,fullName}=req.body
+    const {userName,email,password,description,fullName}=req.body
     if(!email.trim()||!password.trim()||!userName.trim()||!fullName.trim()){
         throw new ApiError(400,"All fields are required")
     }
@@ -82,6 +82,7 @@ const coverImage = coverImageLocalPath
 
     const user=await User.create({
         userName,
+        description,
         email,
         password,
         fullName,
