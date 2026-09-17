@@ -32,4 +32,6 @@ app.use("/like",likeRouter)
 
 import subscribeRouter from './routes/subscribe.routes.js'
 app.use("/subscribe",subscribeRouter)
+import { apiErrorHandling } from './utils/ErrorHandling.js';
+app.use(apiErrorHandling)
 export {app} 
