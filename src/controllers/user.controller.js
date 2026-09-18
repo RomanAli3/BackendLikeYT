@@ -267,23 +267,34 @@ const changeUserPassword=AsyncHandler(async(req,res)=>{
 
 
 })
-const changeFullName=AsyncHandler(async(req,res)=>{
-    const {fullName} = req.body
-    if(!fullName){
-        throw new ApiError(400,"Name is required")
+const changeFullName = AsyncHandler(async (req, res) => {
+
+    const { fullName, description } = req.body
+
+    if (!(fullName?.trim() || description?.trim())) {
+        throw new ApiError(400, "For update one field is required")
     }
-    const user=await User.findByIdAndUpdate(
+
+    const updateData = {}
+
+    if (fullName?.trim()) {
+        updateData.fullName = fullName
+    }
+
+    if (description?.trim()) {
+        updateData.description = description
+    }
+
+    const user = await User.findByIdAndUpdate(
         req.user._id,
+        updateData,
         {
-            fullName:fullName
-        },
-        {
-            new:true
+            new: true
         }
     ).select("-password -refreshToken")
 
     return res.status(200)
-    .json(new ApiResponse(200,user,"fullName changed successfully"))
+        .json(new ApiResponse(200, user, "Profile updated successfully"))
 })
 
 const channelInformation=AsyncHandler(async(req,res)=>{
