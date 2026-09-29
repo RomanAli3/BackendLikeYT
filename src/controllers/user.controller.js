@@ -297,6 +297,8 @@ const changeFullName = AsyncHandler(async (req, res) => {
         .json(new ApiResponse(200, user, "Profile updated successfully"))
 })
 
+// change channel information code using id
+
 const channelInformation=AsyncHandler(async(req,res)=>{
     const {channelId}=req.params
 
