@@ -61,7 +61,7 @@ const userRegisteration=AsyncHandler(async(req,res)=>{
     })
 
     if(existedUser){
-        throw new ApiError(400,"Usere Already Existed")
+        throw new ApiError(400,"User Already Existed")
     }
 
     const profilePicLocalPath =req.files?.profilePicture?.[0].path 
