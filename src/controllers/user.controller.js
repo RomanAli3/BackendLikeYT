@@ -334,6 +334,17 @@ const channelInformation=AsyncHandler(async(req,res)=>{
 
 
 })
+
+const getUserById=AsyncHandler(async(req,res)=>{
+    const {userId}=req.params
+    if(!userId){
+        throw new ApiError(400,"user id required")
+    }
+    const user = await User.findById({_id:userId}).select('-passsword -refreshToken -email ')
+
+    return res.status(200)
+    .json(new ApiResponse(200,user,"User channel information fetched"))
+})
 export {
     userRegisteration,
     loginUser,
@@ -343,5 +354,6 @@ export {
     changeCoverImage,
     changeUserPassword,
     changeFullName,
+    getUserById,
     channelInformation
 }
